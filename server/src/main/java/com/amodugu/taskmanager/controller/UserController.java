@@ -1,5 +1,6 @@
 package com.amodugu.taskmanager.controller;
 
+import com.amodugu.taskmanager.dto.UserResponse;
 import com.amodugu.taskmanager.entity.User;
 import com.amodugu.taskmanager.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,20 +19,20 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User saved = userService.createUser(user);
+    public ResponseEntity<UserResponse> createUser(@RequestBody User user) {
+        UserResponse saved = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }

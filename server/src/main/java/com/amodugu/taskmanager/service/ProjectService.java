@@ -1,5 +1,6 @@
 package com.amodugu.taskmanager.service;
 
+import com.amodugu.taskmanager.dto.ProjectResponse;
 import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -15,19 +16,27 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
+    public ProjectResponse createProject(Project project) {
+        return toResponse(projectRepository.save(project));
     }
 
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public List<ProjectResponse> getAllProjects() {
+        return projectRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public Optional<Project> getProjectById(Long id) {
-        return projectRepository.findById(id);
+    public Optional<ProjectResponse> getProjectById(Long id) {
+        return projectRepository.findById(id).map(this::toResponse);
     }
 
-    public List<Project> getProjectsByOwner(Long ownerId) {
-        return projectRepository.findByOwnerId(ownerId);
+    public List<ProjectResponse> getProjectsByOwner(Long ownerId) {
+        return projectRepository.findByOwnerId(ownerId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    private ProjectResponse toResponse(Project project) {
+        return new ProjectResponse(project.getId(), project.getName(), project.getDescription(), project.getOwner().getId());
     }
 }
