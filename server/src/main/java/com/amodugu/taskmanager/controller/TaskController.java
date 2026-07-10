@@ -46,4 +46,9 @@ public class TaskController {
     public List<TaskResponse> getTasksByAssignee(@PathVariable Long assigneeId) {
         return taskService.getTasksByAssignee(assigneeId);
     }
+
+    @GetMapping("/assignee/{assigneeId}/summary")
+    public List<String> getTaskSummaries(@PathVariable Long assigneeId) {
+        return taskService.getTaskSummariesForAssignee(assigneeId);
+    }
 }
