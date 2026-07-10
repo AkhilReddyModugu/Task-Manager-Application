@@ -53,7 +53,7 @@ public class TaskService {
     }
 
     public List<String> getTaskSummariesForAssignee(Long assigneeId) {
-        List<Task> tasks = taskRepository.findByAssigneeId(assigneeId);
+        List<Task> tasks = taskRepository.findByAssigneeIdWithProject(assigneeId);
         return tasks.stream()
                 .map(t -> t.getTitle() + " — " + t.getProject().getName())
                 .toList();
