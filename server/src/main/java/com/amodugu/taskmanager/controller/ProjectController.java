@@ -42,4 +42,10 @@ public class ProjectController {
     public List<ProjectResponse> getProjectsByOwner(@PathVariable Long ownerId) {
         return projectService.getProjectsByOwner(ownerId);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+        projectService.deleteProjectWithTasks(id);
+        return ResponseEntity.noContent().build();
+    }
 }
