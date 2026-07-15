@@ -3,6 +3,7 @@ package com.amodugu.taskmanager.controller;
 import com.amodugu.taskmanager.dto.ProjectResponse;
 import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.service.ProjectService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectResponse> createProject(@RequestBody Project project) {
+    public ResponseEntity<ProjectResponse> createProject(@Valid @RequestBody Project project) {
         ProjectResponse createdProject = projectService.createProject(project);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
     }

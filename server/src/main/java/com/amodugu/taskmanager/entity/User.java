@@ -1,6 +1,7 @@
 package com.amodugu.taskmanager.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -18,15 +19,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Username is required")
     @Column(nullable = false, unique = true)
     private String username;
 
+    @NotBlank(message = "Email is required")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Password is required")
     @Column(nullable = false)
     private String password;
 
+    @NotBlank(message = "Role is required")
     @Column(nullable = false)
     private String role; // e.g. "USER", "ADMIN" — we'll make this an enum later
 }
