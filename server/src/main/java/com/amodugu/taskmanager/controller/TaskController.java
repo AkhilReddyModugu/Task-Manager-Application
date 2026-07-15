@@ -3,6 +3,7 @@ package com.amodugu.taskmanager.controller;
 import com.amodugu.taskmanager.dto.TaskResponse;
 import com.amodugu.taskmanager.entity.Task;
 import com.amodugu.taskmanager.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponse> createTask(@RequestBody Task task) {
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody Task task) {
         TaskResponse saved = taskService.createTask(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
