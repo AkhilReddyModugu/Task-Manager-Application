@@ -1,10 +1,7 @@
 package com.amodugu.taskmanager.controller;
 
 import com.amodugu.taskmanager.dto.UserResponse;
-import com.amodugu.taskmanager.entity.User;
 import com.amodugu.taskmanager.service.UserService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +28,4 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody User user) {
-        UserResponse saved = userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-    }
 }
