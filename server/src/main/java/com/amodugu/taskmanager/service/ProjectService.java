@@ -2,6 +2,8 @@ package com.amodugu.taskmanager.service;
 
 import com.amodugu.taskmanager.dto.ProjectResponse;
 import com.amodugu.taskmanager.entity.Project;
+import com.amodugu.taskmanager.exception.ForbiddenException;
+import com.amodugu.taskmanager.exception.ResourceNotFoundException;
 import com.amodugu.taskmanager.repository.ProjectRepository;
 import com.amodugu.taskmanager.repository.TaskRepository;
 import jakarta.transaction.Transactional;
@@ -41,7 +43,14 @@ public class ProjectService {
     }
 
     @Transactional
-    public void deleteProjectWithTasks(Long projectId) {
+    public void deleteProjectWithTasks(Long projectId, String requestingUsername) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(()->new ResourceNotFoundException("Project not found"));
+
+        if(!project.getOwner().getUsername().equals(requestingUsername)) {
+            throw new ForbiddenException("You are not allowed to delete this project");
+        }
+
         taskRepository.deleteByProjectId(projectId);
         projectRepository.deleteById(projectId);
     }

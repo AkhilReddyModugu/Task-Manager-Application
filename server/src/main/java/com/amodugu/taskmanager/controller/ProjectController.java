@@ -6,6 +6,8 @@ import com.amodugu.taskmanager.service.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +28,8 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectResponse>> getAllProjects() {
+    public ResponseEntity<List<ProjectResponse>> getAllProjects(@AuthenticationPrincipal UserDetails currentUser) {
+        System.out.println("Request made by: " + currentUser.getUsername());
         List<ProjectResponse> allProjects = projectService.getAllProjects();
         return ResponseEntity.ok(allProjects);
     }
@@ -44,8 +47,8 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        projectService.deleteProjectWithTasks(id);
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
+        projectService.deleteProjectWithTasks(id, currentUser.getUsername());
         return ResponseEntity.noContent().build();
     }
 }
