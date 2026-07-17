@@ -1,5 +1,6 @@
 package com.amodugu.taskmanager.controller;
 
+import com.amodugu.taskmanager.dto.CreateProjectRequest;
 import com.amodugu.taskmanager.dto.ProjectResponse;
 import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.service.ProjectService;
@@ -22,8 +23,8 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectResponse> createProject(@Valid @RequestBody Project project) {
-        ProjectResponse createdProject = projectService.createProject(project);
+    public ResponseEntity<ProjectResponse> createProject(@Valid @RequestBody CreateProjectRequest project, @AuthenticationPrincipal UserDetails user) {
+        ProjectResponse createdProject = projectService.createProject(project, user.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
     }
 

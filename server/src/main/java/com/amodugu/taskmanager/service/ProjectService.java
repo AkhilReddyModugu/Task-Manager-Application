@@ -1,11 +1,14 @@
 package com.amodugu.taskmanager.service;
 
+import com.amodugu.taskmanager.dto.CreateProjectRequest;
 import com.amodugu.taskmanager.dto.ProjectResponse;
 import com.amodugu.taskmanager.entity.Project;
+import com.amodugu.taskmanager.entity.User;
 import com.amodugu.taskmanager.exception.ForbiddenException;
 import com.amodugu.taskmanager.exception.ResourceNotFoundException;
 import com.amodugu.taskmanager.repository.ProjectRepository;
 import com.amodugu.taskmanager.repository.TaskRepository;
+import com.amodugu.taskmanager.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +19,23 @@ import java.util.Optional;
 public class ProjectService {
     private ProjectRepository projectRepository;
     private TaskRepository taskRepository;
+    private UserRepository userRepository;
 
-    public ProjectService(ProjectRepository projectRepository, TaskRepository taskRepository) {
+    public ProjectService(ProjectRepository projectRepository, TaskRepository taskRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
-    public ProjectResponse createProject(Project project) {
+    public ProjectResponse createProject(CreateProjectRequest request, String ownerUsername) {
+        User owner = userRepository.findByUsername(ownerUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Project project = new Project();
+        project.setOwner(owner);
+        project.setName(request.getName());
+        project.setDescription(request.getDescription());
+
         return toResponse(projectRepository.save(project));
     }
 

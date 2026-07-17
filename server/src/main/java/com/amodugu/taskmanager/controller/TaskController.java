@@ -1,5 +1,6 @@
 package com.amodugu.taskmanager.controller;
 
+import com.amodugu.taskmanager.dto.CreateTaskRequest;
 import com.amodugu.taskmanager.dto.TaskResponse;
 import com.amodugu.taskmanager.entity.Task;
 import com.amodugu.taskmanager.service.TaskService;
@@ -21,8 +22,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody Task task) {
-        TaskResponse saved = taskService.createTask(task);
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskRequest request) {
+        TaskResponse saved = taskService.createTask(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 

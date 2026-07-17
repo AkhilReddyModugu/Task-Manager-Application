@@ -1,8 +1,14 @@
 package com.amodugu.taskmanager.service;
 
+import com.amodugu.taskmanager.dto.CreateTaskRequest;
 import com.amodugu.taskmanager.dto.TaskResponse;
+import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.entity.Task;
+import com.amodugu.taskmanager.entity.User;
+import com.amodugu.taskmanager.exception.ResourceNotFoundException;
+import com.amodugu.taskmanager.repository.ProjectRepository;
 import com.amodugu.taskmanager.repository.TaskRepository;
+import com.amodugu.taskmanager.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +18,34 @@ import java.util.Optional;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
-    public TaskResponse createTask(Task task) {
+    public TaskResponse createTask(CreateTaskRequest request) {
+        Project project = projectRepository.findById(request.getProjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        User assignee = null;
+        if (request.getAssigneeId() != null) {
+            assignee = userRepository.findById(request.getAssigneeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Assignee not found"));
+        }
+
+        Task task = new Task();
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
+        task.setStatus(request.getStatus());
+        task.setPriority(request.getPriority());
+        task.setDueDate(request.getDueDate());
+        task.setProject(project);
+        task.setAssignee(assignee);
+
         return toResponse(taskRepository.save(task));
     }
 
