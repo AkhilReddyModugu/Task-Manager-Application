@@ -6,6 +6,8 @@ import com.amodugu.taskmanager.dto.UpdateTaskRequest;
 import com.amodugu.taskmanager.entity.Task;
 import com.amodugu.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,8 +33,8 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskResponse> getAllTasks() {
-        return taskService.getAllTasks();
+    public Page<TaskResponse> getAllTasks(Pageable pageable) {
+        return taskService.getAllTasks(pageable);
     }
 
     @GetMapping("/{id}")

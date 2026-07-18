@@ -11,6 +11,8 @@ import com.amodugu.taskmanager.exception.ResourceNotFoundException;
 import com.amodugu.taskmanager.repository.ProjectRepository;
 import com.amodugu.taskmanager.repository.TaskRepository;
 import com.amodugu.taskmanager.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,10 +53,10 @@ public class TaskService {
         return toResponse(taskRepository.save(task));
     }
 
-    public List<TaskResponse> getAllTasks() {
-        return taskRepository.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+    // getALlTasks() with pagination
+    public Page<TaskResponse> getAllTasks(Pageable pageable) {
+        return taskRepository.findAll(pageable)
+                .map(this::toResponse);
     }
 
     public Optional<TaskResponse> getTaskById(Long id) {
