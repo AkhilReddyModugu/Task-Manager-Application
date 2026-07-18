@@ -6,6 +6,8 @@ import com.amodugu.taskmanager.dto.UpdateProjectRequest;
 import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.service.ProjectService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,9 +32,8 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectResponse>> getAllProjects(@AuthenticationPrincipal UserDetails currentUser) {
-        System.out.println("Request made by: " + currentUser.getUsername());
-        List<ProjectResponse> allProjects = projectService.getAllProjects();
+    public ResponseEntity<Page<ProjectResponse>> getAllProjects(Pageable pageable) {
+        Page<ProjectResponse> allProjects = projectService.getAllProjects(pageable);
         return ResponseEntity.ok(allProjects);
     }
 

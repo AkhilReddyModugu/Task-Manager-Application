@@ -11,6 +11,8 @@ import com.amodugu.taskmanager.repository.ProjectRepository;
 import com.amodugu.taskmanager.repository.TaskRepository;
 import com.amodugu.taskmanager.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,10 +42,9 @@ public class ProjectService {
         return toResponse(projectRepository.save(project));
     }
 
-    public List<ProjectResponse> getAllProjects() {
-        return projectRepository.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<ProjectResponse> getAllProjects(Pageable pageable) {
+        return projectRepository.findAll(pageable)
+                .map(this::toResponse);
     }
 
     public Optional<ProjectResponse> getProjectById(Long id) {

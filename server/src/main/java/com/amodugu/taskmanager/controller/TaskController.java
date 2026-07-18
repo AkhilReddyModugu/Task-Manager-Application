@@ -33,8 +33,9 @@ public class TaskController {
     }
 
     @GetMapping
-    public Page<TaskResponse> getAllTasks(Pageable pageable) {
-        return taskService.getAllTasks(pageable);
+    public ResponseEntity<Page<TaskResponse>> getAllTasks(Pageable pageable) {
+        Page<TaskResponse> response= taskService.getAllTasks(pageable);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
