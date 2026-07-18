@@ -2,6 +2,7 @@ package com.amodugu.taskmanager.controller;
 
 import com.amodugu.taskmanager.dto.CreateTaskRequest;
 import com.amodugu.taskmanager.dto.TaskResponse;
+import com.amodugu.taskmanager.dto.UpdateTaskRequest;
 import com.amodugu.taskmanager.entity.Task;
 import com.amodugu.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
@@ -52,5 +53,11 @@ public class TaskController {
     @GetMapping("/assignee/{assigneeId}/summary")
     public List<String> getTaskSummaries(@PathVariable Long assigneeId) {
         return taskService.getTaskSummariesForAssignee(assigneeId);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request) {
+        TaskResponse updated= taskService.updateTask(id,request);
+        return ResponseEntity.ok(updated);
     }
 }

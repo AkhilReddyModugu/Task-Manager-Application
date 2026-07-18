@@ -2,6 +2,7 @@ package com.amodugu.taskmanager.service;
 
 import com.amodugu.taskmanager.dto.CreateTaskRequest;
 import com.amodugu.taskmanager.dto.TaskResponse;
+import com.amodugu.taskmanager.dto.UpdateTaskRequest;
 import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.entity.Task;
 import com.amodugu.taskmanager.entity.User;
@@ -69,6 +70,33 @@ public class TaskService {
         return taskRepository.findByAssigneeId(assigneeId).stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    public TaskResponse updateTask(Long taskId, UpdateTaskRequest request) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if(request.getTitle() != null) {
+            task.setTitle(request.getTitle());
+        }
+        if(request.getDescription() != null) {
+            task.setDescription(request.getDescription());
+        }
+        if(request.getStatus() != null) {
+            task.setStatus(request.getStatus());
+        }
+        if(request.getPriority() != null) {
+            task.setPriority(request.getPriority());
+        }
+        if(request.getDueDate() != null) {
+            task.setDueDate(request.getDueDate());
+        }
+        if(request.getAssigneeId() != null) {
+            User assignee = userRepository.findById(request.getAssigneeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Assignee not found"));
+            task.setAssignee(assignee);
+        }
+        return  toResponse(taskRepository.save(task));
     }
 
     private TaskResponse toResponse(Task task) {
