@@ -8,6 +8,8 @@ import com.amodugu.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,4 +62,11 @@ public class TaskController {
         TaskResponse updated= taskService.updateTask(id,request);
         return ResponseEntity.ok(updated);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<TaskResponse> deleteTask(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) {
+        taskService.deleteTask(id,currentUser.getUsername());
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -6,6 +6,7 @@ import com.amodugu.taskmanager.dto.UpdateTaskRequest;
 import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.entity.Task;
 import com.amodugu.taskmanager.entity.User;
+import com.amodugu.taskmanager.exception.ForbiddenException;
 import com.amodugu.taskmanager.exception.ResourceNotFoundException;
 import com.amodugu.taskmanager.repository.ProjectRepository;
 import com.amodugu.taskmanager.repository.TaskRepository;
@@ -97,6 +98,17 @@ public class TaskService {
             task.setAssignee(assignee);
         }
         return  toResponse(taskRepository.save(task));
+    }
+
+    public void deleteTask(Long taskId, String requestingUsername) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if (!task.getProject().getOwner().getUsername().equals(requestingUsername)) {
+            throw new ForbiddenException("You are not allowed to delete this task");
+        }
+
+        taskRepository.deleteById(taskId);
     }
 
     private TaskResponse toResponse(Task task) {
