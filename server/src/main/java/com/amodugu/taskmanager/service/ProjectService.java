@@ -2,6 +2,7 @@ package com.amodugu.taskmanager.service;
 
 import com.amodugu.taskmanager.dto.CreateProjectRequest;
 import com.amodugu.taskmanager.dto.ProjectResponse;
+import com.amodugu.taskmanager.dto.UpdateProjectRequest;
 import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.entity.User;
 import com.amodugu.taskmanager.exception.ForbiddenException;
@@ -66,6 +67,22 @@ public class ProjectService {
 
         taskRepository.deleteByProjectId(projectId);
         projectRepository.deleteById(projectId);
+    }
+
+    public ProjectResponse updateProject(Long projectId, UpdateProjectRequest request, String requestingUsername) {
+        Project project= projectRepository.findById(projectId)
+                .orElseThrow(()->new ResourceNotFoundException("Project not found"));
+
+        if(!project.getOwner().getUsername().equals(requestingUsername)){
+            throw new ForbiddenException("You are not allowed to update this project");
+        }
+        if(request.getName() != null) {
+            project.setName(request.getName());
+        }
+        if(request.getDescription() != null) {
+            project.setDescription(request.getDescription());
+        }
+        return toResponse(projectRepository.save(project));
     }
 
     private ProjectResponse toResponse(Project project) {

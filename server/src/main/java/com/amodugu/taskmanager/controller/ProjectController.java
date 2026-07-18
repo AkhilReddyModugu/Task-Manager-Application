@@ -2,6 +2,7 @@ package com.amodugu.taskmanager.controller;
 
 import com.amodugu.taskmanager.dto.CreateProjectRequest;
 import com.amodugu.taskmanager.dto.ProjectResponse;
+import com.amodugu.taskmanager.dto.UpdateProjectRequest;
 import com.amodugu.taskmanager.entity.Project;
 import com.amodugu.taskmanager.service.ProjectService;
 import jakarta.validation.Valid;
@@ -45,6 +46,12 @@ public class ProjectController {
     @GetMapping("/owner/{ownerId}")
     public List<ProjectResponse> getProjectsByOwner(@PathVariable Long ownerId) {
         return projectService.getProjectsByOwner(ownerId);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @RequestBody UpdateProjectRequest request, @AuthenticationPrincipal UserDetails currentUser) {
+        ProjectResponse response= projectService.updateProject(id,request,currentUser.getUsername());
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
