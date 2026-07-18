@@ -2,6 +2,7 @@ package com.amodugu.taskmanager.controller;
 
 import com.amodugu.taskmanager.dto.LoginRequest;
 import com.amodugu.taskmanager.dto.LoginResponse;
+import com.amodugu.taskmanager.dto.RegisterRequest;
 import com.amodugu.taskmanager.dto.UserResponse;
 import com.amodugu.taskmanager.entity.User;
 import com.amodugu.taskmanager.security.JwtService;
@@ -39,8 +40,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody User user) {
-        UserResponse created= userService.createUser(user);
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
+        UserResponse created= userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }

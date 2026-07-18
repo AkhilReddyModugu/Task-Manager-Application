@@ -1,5 +1,6 @@
 package com.amodugu.taskmanager.service;
 
+import com.amodugu.taskmanager.dto.RegisterRequest;
 import com.amodugu.taskmanager.dto.UserResponse;
 import com.amodugu.taskmanager.entity.User;
 import com.amodugu.taskmanager.repository.UserRepository;
@@ -19,8 +20,13 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserResponse createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public UserResponse createUser(RegisterRequest request) {
+        User user= new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail());
+        user.setRole("USER");
+
         return toResponse(userRepository.save(user));
     }
 
