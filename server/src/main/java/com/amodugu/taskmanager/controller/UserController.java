@@ -3,6 +3,7 @@ package com.amodugu.taskmanager.controller;
 import com.amodugu.taskmanager.dto.UserResponse;
 import com.amodugu.taskmanager.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UserResponse> getAllUsers() {
         return userService.getAllUsers();
