@@ -33,9 +33,13 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public TaskResponse createTask(CreateTaskRequest request) {
+    public TaskResponse createTask(CreateTaskRequest request, String requestingUsername) {
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        if(!project.getOwner().getUsername().equals(requestingUsername)) {
+            throw new ForbiddenException("You are not allowed to perform this action");
+        }
 
         User assignee = null;
         if (request.getAssigneeId() != null) {
@@ -79,9 +83,13 @@ public class TaskService {
                 .toList();
     }
 
-    public TaskResponse updateTask(Long taskId, UpdateTaskRequest request) {
+    public TaskResponse updateTask(Long taskId, UpdateTaskRequest request, String requestingUsername) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if (!task.getProject().getOwner().getUsername().equals(requestingUsername)) {
+            throw new ForbiddenException("You are not allowed to perform this action");
+        }
 
         if(request.getTitle() != null) {
             task.setTitle(request.getTitle());

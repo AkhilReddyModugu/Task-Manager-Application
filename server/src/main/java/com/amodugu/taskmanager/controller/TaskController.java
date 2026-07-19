@@ -27,8 +27,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskRequest request) {
-        TaskResponse saved = taskService.createTask(request);
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody CreateTaskRequest request, @AuthenticationPrincipal UserDetails currentUser) {
+        TaskResponse saved = taskService.createTask(request,currentUser.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
@@ -61,8 +61,8 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request) {
-        TaskResponse updated= taskService.updateTask(id,request);
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request, @AuthenticationPrincipal UserDetails currentUser) {
+        TaskResponse updated= taskService.updateTask(id,request,currentUser.getUsername());
         return ResponseEntity.ok(updated);
     }
 
