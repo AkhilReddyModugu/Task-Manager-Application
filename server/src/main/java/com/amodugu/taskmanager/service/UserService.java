@@ -3,6 +3,7 @@ package com.amodugu.taskmanager.service;
 import com.amodugu.taskmanager.dto.RegisterRequest;
 import com.amodugu.taskmanager.dto.UserResponse;
 import com.amodugu.taskmanager.entity.User;
+import com.amodugu.taskmanager.exception.ResourceNotFoundException;
 import com.amodugu.taskmanager.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,6 +43,12 @@ public class UserService {
 
     public Optional<UserResponse> getUserById(Long id) {
         return userRepository.findById(id).map(this::toResponse);
+    }
+
+    public UserResponse getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(this::toResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     private UserResponse toResponse(User user) {
