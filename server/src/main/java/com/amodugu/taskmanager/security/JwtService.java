@@ -3,11 +3,13 @@ package com.amodugu.taskmanager.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtService {
     private final SecretKey key= Keys.secretKeyFor(SignatureAlgorithm.HS256);
@@ -37,6 +39,7 @@ public class JwtService {
             return true;
         }
         catch (Exception e){
+            log.debug("Token validation failed: {}", e.getMessage());
             return false;
         }
     }

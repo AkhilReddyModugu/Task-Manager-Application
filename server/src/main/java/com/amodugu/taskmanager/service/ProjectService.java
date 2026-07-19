@@ -11,6 +11,7 @@ import com.amodugu.taskmanager.repository.ProjectRepository;
 import com.amodugu.taskmanager.repository.TaskRepository;
 import com.amodugu.taskmanager.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class ProjectService {
     private ProjectRepository projectRepository;
@@ -39,7 +41,9 @@ public class ProjectService {
         project.setName(request.getName());
         project.setDescription(request.getDescription());
 
-        return toResponse(projectRepository.save(project));
+        Project saved = projectRepository.save(project);
+        log.info("Created project {} for owner {}", saved.getId(), ownerUsername);
+        return toResponse(saved);
     }
 
     public Page<ProjectResponse> getAllProjects(Pageable pageable) {
@@ -63,11 +67,13 @@ public class ProjectService {
                 .orElseThrow(()->new ResourceNotFoundException("Project not found"));
 
         if(!project.getOwner().getUsername().equals(requestingUsername)) {
+            log.warn("User {} attempted to delete project {} without permission", requestingUsername, projectId);
             throw new ForbiddenException("You are not allowed to delete this project");
         }
 
         taskRepository.deleteByProjectId(projectId);
         projectRepository.deleteById(projectId);
+        log.info("Deleted project {} and its tasks", projectId);
     }
 
     public ProjectResponse updateProject(Long projectId, UpdateProjectRequest request, String requestingUsername) {
@@ -75,6 +81,7 @@ public class ProjectService {
                 .orElseThrow(()->new ResourceNotFoundException("Project not found"));
 
         if(!project.getOwner().getUsername().equals(requestingUsername)){
+            log.warn("User {} attempted to update project {} without permission", requestingUsername, projectId);
             throw new ForbiddenException("You are not allowed to update this project");
         }
         if(request.getName() != null) {
@@ -83,6 +90,7 @@ public class ProjectService {
         if(request.getDescription() != null) {
             project.setDescription(request.getDescription());
         }
+        log.info("Updated project {}", projectId);
         return toResponse(projectRepository.save(project));
     }
 

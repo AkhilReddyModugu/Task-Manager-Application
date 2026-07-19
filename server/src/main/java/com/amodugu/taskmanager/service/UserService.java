@@ -4,12 +4,14 @@ import com.amodugu.taskmanager.dto.RegisterRequest;
 import com.amodugu.taskmanager.dto.UserResponse;
 import com.amodugu.taskmanager.entity.User;
 import com.amodugu.taskmanager.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserService {
     private UserRepository userRepository;
@@ -27,7 +29,9 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setRole("USER");
 
-        return toResponse(userRepository.save(user));
+        User saved = userRepository.save(user);
+        log.info("Registered new user {} ({})", saved.getUsername(), saved.getId());
+        return toResponse(saved);
     }
 
     public List<UserResponse> getAllUsers() {

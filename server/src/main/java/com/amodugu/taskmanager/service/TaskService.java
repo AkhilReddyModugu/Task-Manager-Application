@@ -11,6 +11,7 @@ import com.amodugu.taskmanager.exception.ResourceNotFoundException;
 import com.amodugu.taskmanager.repository.ProjectRepository;
 import com.amodugu.taskmanager.repository.TaskRepository;
 import com.amodugu.taskmanager.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class TaskService {
 
@@ -50,7 +52,9 @@ public class TaskService {
         task.setProject(project);
         task.setAssignee(assignee);
 
-        return toResponse(taskRepository.save(task));
+        Task saved = taskRepository.save(task);
+        log.info("Created task {} in project {}", saved.getId(), project.getId());
+        return toResponse(saved);
     }
 
     // getALlTasks() with pagination
@@ -99,6 +103,7 @@ public class TaskService {
                     .orElseThrow(() -> new ResourceNotFoundException("Assignee not found"));
             task.setAssignee(assignee);
         }
+        log.info("Updated task {}", taskId);
         return  toResponse(taskRepository.save(task));
     }
 
@@ -107,10 +112,12 @@ public class TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         if (!task.getProject().getOwner().getUsername().equals(requestingUsername)) {
+            log.warn("User {} attempted to delete task {} without permission", requestingUsername, taskId);
             throw new ForbiddenException("You are not allowed to delete this task");
         }
 
         taskRepository.deleteById(taskId);
+        log.info("Deleted task {}", taskId);
     }
 
     private TaskResponse toResponse(Task task) {
