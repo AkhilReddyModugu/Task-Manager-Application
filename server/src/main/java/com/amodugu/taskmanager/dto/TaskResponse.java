@@ -4,6 +4,7 @@ import com.amodugu.taskmanager.entity.TaskStatus;
 import com.amodugu.taskmanager.entity.TaskPriority;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TaskResponse {
     private Long id;
@@ -14,9 +15,12 @@ public class TaskResponse {
     private LocalDate dueDate;
     private Long projectId;
     private Long assigneeId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public TaskResponse(Long id, String title, String description, TaskStatus status,
-                        TaskPriority priority, LocalDate dueDate, Long projectId, Long assigneeId) {
+                        TaskPriority priority, LocalDate dueDate, Long projectId, Long assigneeId,
+                        LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -25,6 +29,8 @@ public class TaskResponse {
         this.dueDate = dueDate;
         this.projectId = projectId;
         this.assigneeId = assigneeId;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() { return id; }
@@ -35,4 +41,6 @@ public class TaskResponse {
     public LocalDate getDueDate() { return dueDate; }
     public Long getProjectId() { return projectId; }
     public Long getAssigneeId() { return assigneeId; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
 }

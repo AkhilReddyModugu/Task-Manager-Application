@@ -95,6 +95,7 @@ public class ProjectService {
     }
 
     private ProjectResponse toResponse(Project project) {
-        return new ProjectResponse(project.getId(), project.getName(), project.getDescription(), project.getOwner().getId());
+        return new ProjectResponse(project.getId(), project.getName(), project.getDescription(), project.getOwner().getId(),
+                project.getCreatedAt(), project.getUpdatedAt());
     }
 }

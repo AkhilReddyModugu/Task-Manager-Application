@@ -125,7 +125,8 @@ public class TaskService {
         return new TaskResponse(
                 task.getId(), task.getTitle(), task.getDescription(),
                 task.getStatus(), task.getPriority(), task.getDueDate(),
-                task.getProject().getId(), assigneeId
+                task.getProject().getId(), assigneeId,
+                task.getCreatedAt(), task.getUpdatedAt()
         );
     }
 
