@@ -1,16 +1,15 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
+import axiosClient from '../api/axiosClient';
 
-const LoginForm= () => {
+const LoginForm= ({title}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading]= useState(false);
+    const navigate= useNavigate();
 
-    useEffect(() => {
-        document.title = username ? `Login - ${username}` : 'Login - Task Manager';
-    });
-
-    function handleSubmit(e){
+    async function handleSubmit(e){
         e.preventDefault();
 
         if(!username || !password){
@@ -20,12 +19,24 @@ const LoginForm= () => {
 
         setError('');
         setIsLoading(true);
-        console.log('Submitted:', username, password);
-        setIsLoading(false);
+
+        try{
+            const response= await axiosClient.post('/auth/login', {username, password});
+            const token= response.data.token;
+            localStorage.setItem('token',token);
+            navigate('/dashboard');
+        }
+        catch(err){
+            setError('Invalid username or password');
+        }
+        finally{
+            setIsLoading(false);
+        }
     }
 
     return (
         <form onSubmit={handleSubmit}> 
+            <p>{title}</p>
             <div>
                 <label>Username </label>
                 <input 
